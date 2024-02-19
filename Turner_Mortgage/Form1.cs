@@ -46,41 +46,62 @@ namespace Turner_Mortgage
 
         }
 
-        private void btnCaclulate_Click(object sender, EventArgs e)
+        private void btnCalculate_Click(object sender, EventArgs e)
         {
-                if (!double.TryParse(txtPrincipalWhole.Text, out double P))
-                {
-                    MessageBox.Show("Please enter a valid principal amount.");
-                    txtPrincipalWhole.Clear();
-                    txtPrincipalWhole.Focus();
-                    return;
-                }
+            StringBuilder errorMessages = new StringBuilder();
+            bool inputIsValid = true;
+            double annualRate = 0.0;
 
-                int n;
-                if (rbtn15.Checked) n = 15 * 12;
-                else if (rbtn30.Checked) n = 30 * 12;
-                else if (!int.TryParse(txtOther.Text, out n) || n <= 0)
+            // Check if principal is valid
+            if (!double.TryParse(txtPrincipalWhole.Text, out double P) || string.IsNullOrWhiteSpace(txtPrincipalWhole.Text))
+            {
+                errorMessages.AppendLine("- The principal textbox must contain only digits.");
+                inputIsValid = false;
+            }
+
+            // Check if term is selected and valid
+            int n = 0;
+            if (rbtn15.Checked) n = 15 * 12;
+            else if (rbtn30.Checked) n = 30 * 12;
+            else if (rbtnOther.Checked)
+            {
+                if (!int.TryParse(txtOther.Text, out n) || n < 5 || n > 40)
                 {
-                    MessageBox.Show("Please enter a valid number of years in 'Other'.");
-                    txtOther.Clear();
-                    txtOther.Focus();
-                    return;
+                    errorMessages.AppendLine("- For 'Other' term, the value must be a number between 5 and 40.");
+                    inputIsValid = false;
                 }
                 else n *= 12; // Convert years to months for 'Other'
+            }
+            else
+            {
+                errorMessages.AppendLine("- No term option has been selected.");
+                inputIsValid = false;
+            }
 
-                if (!double.TryParse(cmbInterestValue.SelectedItem.ToString(), out double annualRate))
-                {
-                    MessageBox.Show("Please select a valid interest rate.");
-                    cmbInterestValue.Focus();
-                    return;
-                }
-                double r = annualRate / 100 / 12; // Convert annual rate to monthly decimal rate
+            // Check if rate is selected
+            if (cmbInterestValue.SelectedIndex == -1 || !double.TryParse(cmbInterestValue.SelectedItem?.ToString(), out annualRate))
+            {
+                errorMessages.AppendLine("- No interest rate has been selected.");
+                inputIsValid = false;
+            }
 
-                double M = P * (r * Math.Pow((1 + r), n)) / (Math.Pow((1 + r), n) - 1);
+            // If any input is not valid, display errors and return
+            if (!inputIsValid)
+            {
+                lblFinalResult.Visible = true;
+                lblFinalResult.Text = "Errors found:\n" + errorMessages.ToString();
+                return; // Stop further processing
+            }
+
+            // If input is valid, proceed with calculation
+            double r = annualRate / 100 / 12; // Convert annual rate to monthly decimal rate
+            double M = P * (r * Math.Pow((1 + r), n)) / (Math.Pow((1 + r), n) - 1);
+
             lblFinalResult.Visible = true;
             lblFinalResult.Text = $"Monthly Payment: {M:C}";
 
-            
+            // Enable the reset button only after successful calculation
+            btnReset.Enabled = true;
         }
 
         private void btnReset_Click(object sender, EventArgs e)
@@ -104,6 +125,7 @@ namespace Turner_Mortgage
 
             // Optionally, set focus back to the principal amount TextBox
             txtPrincipalWhole.Focus();
+            btnReset.Enabled = false;
         }
 
         private void rbtnOther_CheckedChanged(object sender, EventArgs e)

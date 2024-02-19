@@ -36,7 +36,10 @@
             this.rbtnOther = new System.Windows.Forms.RadioButton();
             this.lblInterest = new System.Windows.Forms.Label();
             this.cmbInterestValue = new System.Windows.Forms.ComboBox();
-            this.btnCaclulate = new System.Windows.Forms.Button();
+            this.btnCalculate = new System.Windows.Forms.Button(); // Corrected button name
+                                                                   // Other button properties setup...
+            this.btnCalculate.Click += new System.EventHandler(this.btnCalculate_Click); // Ensure this matches the actual method name
+
             this.btnExit = new System.Windows.Forms.Button();
             this.btnReset = new System.Windows.Forms.Button();
             this.lblPaymentFinal = new System.Windows.Forms.Label();
@@ -150,13 +153,13 @@
             // 
             // btnCaclulate
             // 
-            this.btnCaclulate.Location = new System.Drawing.Point(44, 252);
-            this.btnCaclulate.Name = "btnCaclulate";
-            this.btnCaclulate.Size = new System.Drawing.Size(223, 41);
-            this.btnCaclulate.TabIndex = 8;
-            this.btnCaclulate.Text = "Calculate Payment";
-            this.btnCaclulate.UseVisualStyleBackColor = true;
-            this.btnCaclulate.Click += new System.EventHandler(this.btnCaclulate_Click);
+            this.btnCalculate.Location = new System.Drawing.Point(44, 252);
+            this.btnCalculate.Name = "btnCaclulate";
+            this.btnCalculate.Size = new System.Drawing.Size(223, 41);
+            this.btnCalculate.TabIndex = 8;
+            this.btnCalculate.Text = "Calculate Payment";
+            this.btnCalculate.UseVisualStyleBackColor = true;
+            this.btnCalculate.Click += new System.EventHandler(this.btnCalculate_Click);
             // 
             // btnExit
             // 
@@ -215,7 +218,7 @@
             this.Controls.Add(this.lblPaymentFinal);
             this.Controls.Add(this.btnReset);
             this.Controls.Add(this.btnExit);
-            this.Controls.Add(this.btnCaclulate);
+            this.Controls.Add(this.btnCalculate);
             this.Controls.Add(this.cmbInterestValue);
             this.Controls.Add(this.lblInterest);
             this.Controls.Add(this.rbtnOther);
@@ -242,7 +245,7 @@
         private System.Windows.Forms.RadioButton rbtnOther;
         private System.Windows.Forms.Label lblInterest;
         private System.Windows.Forms.ComboBox cmbInterestValue;
-        private System.Windows.Forms.Button btnCaclulate;
+        private System.Windows.Forms.Button btnCalculate;
         private System.Windows.Forms.Button btnExit;
         private System.Windows.Forms.Button btnReset;
         private System.Windows.Forms.Label lblPaymentFinal;
