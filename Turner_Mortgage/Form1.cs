@@ -26,7 +26,7 @@ namespace Turner_Mortgage
         {
             if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
             {
-                e.Handled = true; // Handle the event, effectively ignoring the input
+                e.Handled = true;
             }
         }
 
@@ -52,14 +52,12 @@ namespace Turner_Mortgage
             bool inputIsValid = true;
             double annualRate = 0.0;
 
-            // Check if principal is valid
             if (!double.TryParse(txtPrincipalWhole.Text, out double P) || string.IsNullOrWhiteSpace(txtPrincipalWhole.Text))
             {
                 errorMessages.AppendLine("- The principal textbox must contain only digits.");
                 inputIsValid = false;
             }
 
-            // Check if term is selected and valid
             int n = 0;
             if (rbtn15.Checked) n = 15 * 12;
             else if (rbtn30.Checked) n = 30 * 12;
@@ -70,7 +68,7 @@ namespace Turner_Mortgage
                     errorMessages.AppendLine("- For 'Other' term, the value must be a number between 5 and 40.");
                     inputIsValid = false;
                 }
-                else n *= 12; // Convert years to months for 'Other'
+                else n *= 12;
             }
             else
             {
@@ -78,29 +76,28 @@ namespace Turner_Mortgage
                 inputIsValid = false;
             }
 
-            // Check if rate is selected
+
             if (cmbInterestValue.SelectedIndex == -1 || !double.TryParse(cmbInterestValue.SelectedItem?.ToString(), out annualRate))
             {
                 errorMessages.AppendLine("- No interest rate has been selected.");
                 inputIsValid = false;
             }
 
-            // If any input is not valid, display errors and return
             if (!inputIsValid)
             {
                 lblFinalResult.Visible = true;
                 lblFinalResult.Text = "Errors found:\n" + errorMessages.ToString();
-                return; // Stop further processing
+                return;
             }
 
-            // If input is valid, proceed with calculation
-            double r = annualRate / 100 / 12; // Convert annual rate to monthly decimal rate
+           
+            double r = annualRate / 100 / 12; 
             double M = P * (r * Math.Pow((1 + r), n)) / (Math.Pow((1 + r), n) - 1);
 
             lblFinalResult.Visible = true;
             lblFinalResult.Text = $"Monthly Payment: {M:C}";
 
-            // Enable the reset button only after successful calculation
+            
             btnReset.Enabled = true;
         }
 
@@ -108,22 +105,19 @@ namespace Turner_Mortgage
         {
             txtPrincipalWhole.Clear();
 
-            // Reset RadioButton selection to default (e.g., 30 Years)
+            
             rbtn30.Checked = true;
             rbtn15.Checked = false;
             rbtnOther.Checked = false;
 
-            // Make sure the 'Other' TextBox is hidden
+            
             txtOther.Visible = false;
-            txtOther.Clear(); // Also clear any text if present
+            txtOther.Clear(); 
 
-            // Reset the ComboBox selection to the first item or no selection
-            cmbInterestValue.SelectedIndex = -1; // This removes any selection, you can set to 0 for selecting the first item
-
-            // Clear the final result label
+            
+            cmbInterestValue.SelectedIndex = -1;
             lblFinalResult.Text = "";
 
-            // Optionally, set focus back to the principal amount TextBox
             txtPrincipalWhole.Focus();
             btnReset.Enabled = false;
         }
